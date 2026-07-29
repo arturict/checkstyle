@@ -1,0 +1,18 @@
+name: Test PR Close Cancellation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [test-21006-base]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wait:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep the original run active
+        run: sleep 300
